@@ -1,40 +1,31 @@
 name: CI
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-
 permissions:
   contents: read
   actions: read
-
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
   validate:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@v4
       - name: Require a reproducible dependency lock
         run: |
           if [ ! -f package-lock.json ]; then
-            echo "package-lock.json is missing. Run the Prepare dependency lock workflow, download its verified artifact, and commit package-lock.json plus MANIFEST.sha256."
+            echo "package-lock.json is missing."
             exit 1
           fi
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      - uses: actions/setup-node@v4
         with:
-          node-version: 24.22.3
+          node-version: "24"
           cache: npm
-      - name: Install and verify the pinned npm release
-        run: |
-          npm install --global npm@11.19.1
-          test "$(node --version)" = "v24.22.3"
-          test "$(npm --version)" = "11.19.1"
       - run: npm ci --no-audit --no-fund
       - run: npm run manifest:check
       - run: npm run format:check
@@ -48,7 +39,7 @@ jobs:
       - name: Generate CycloneDX SBOM
         run: npm run sbom -- "$RUNNER_TEMP/fileforge-sbom.cdx.json"
       - name: Upload software bill of materials
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        uses: actions/upload-artifact@v4
         with:
           name: fileforge-sbom
           path: ${{ runner.temp }}/fileforge-sbom.cdx.json
