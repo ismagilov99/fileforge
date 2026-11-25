@@ -39,7 +39,7 @@ jobs:
       - name: Generate CycloneDX SBOM
         run: npm run sbom -- "$RUNNER_TEMP/fileforge-sbom.cdx.json"
       - name: Upload software bill of materials
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: fileforge-sbom
           path: ${{ runner.temp }}/fileforge-sbom.cdx.json

@@ -35,7 +35,7 @@ jobs:
           cp package-lock.json MANIFEST.sha256 "$RUNNER_TEMP/fileforge-release-prerequisites/"
           cp "$RUNNER_TEMP/fileforge-sbom.cdx.json" "$RUNNER_TEMP/fileforge-release-prerequisites/"
       - name: Upload lockfile and validation evidence
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: fileforge-release-prerequisites
           path: $RUNNER_TEMP/fileforge-release-prerequisites/
